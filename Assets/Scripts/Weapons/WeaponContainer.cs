@@ -1,31 +1,32 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class WeaponContainer : MonoBehaviour{	public GameObject[] weapons = new GameObject[1];	int activeWeapon;	void Awake()
+public class WeaponContainer : MonoBehaviour{	public GameObject[] weapons = new GameObject[1];	public int activeWeapon;	public int side = 1;	void Awake()
 	{
-		toggleWeapon(0);
-	}	protected void resetWeapons()
+		ToggleWeapon(0);
+	}	protected void ResetWeapon()
 	{
 		for (int i = 0; i < weapons.Length; i++)
 		{
-			Debug.Log(i);
-			weapons[i].gameObject.SetActive(false);
+			//Debug.Log(i);
+			weapons[i].GetComponent<Weapon>().side = side;
+            weapons[i].gameObject.SetActive(false);
 		}
-	}	public void toggleWeapon(int id)
+	}	public void ToggleWeapon(int id)
 	{
 		activeWeapon = id;
-		resetWeapons();
+		ResetWeapon();
 		weapons[id].gameObject.SetActive(true);
 	}
 
-	public void toggleWeapon(string name)
+	public void ToggleWeapon(string name)
 	{
 		for (int i = 0; i < weapons.Length; i++)
 		{
 			if (weapons[i].GetComponent<Weapon>().weaponName == name)
 			{
 				activeWeapon = i;
-				resetWeapons();
+				ResetWeapon();
 				weapons[i].gameObject.SetActive(true);
 				return;
 			}
@@ -33,17 +34,24 @@ public class WeaponContainer : MonoBehaviour{	public GameObject[] weapons = ne
 		}
 
 		throw new Exception("Weapon with name: " + name + " not in Container");
-	}	public void nextWeapon()
+	}	public void NextWeapon()
 	{
 		if (activeWeapon >= weapons.Length -1)
 			activeWeapon = -1;
-		toggleWeapon(activeWeapon + 1);
-    }	public void Shoot()
+		ToggleWeapon(activeWeapon + 1);
+    }	public void Reload()
 	{
 		if (activeWeapon != -1)
 		{
-			weapons[activeWeapon].GetComponent<Weapon>().Shoot();
-			Debug.Log(weapons[activeWeapon].GetComponent<Weapon>().weaponName);
+			weapons[activeWeapon].GetComponent<Weapon>().Reload();
+			//Debug.Log(weapons[activeWeapon].GetComponent<Weapon>().weaponName);
+		}
+	}	public void Shoot(bool playerShot = true, bool ai = false)
+	{
+		if (activeWeapon != -1)
+		{
+			weapons[activeWeapon].GetComponent<Weapon>().Shoot(playerShot, ai);
+			//Debug.Log(weapons[activeWeapon].GetComponent<Weapon>().weaponName);
 		}
 	}}
 

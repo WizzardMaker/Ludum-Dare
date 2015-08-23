@@ -3,24 +3,21 @@ using System.Collections;
 
 public class Hand : Weapon {
 
-	public float biteTimeLeft, biteTime, biteRange;
+	public float attackRange;
+
 
 	// Use this for initialization
 	new void Start () {
 		base.Start();
 	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
 
-	public override void Shoot()
+	public override void Shoot(bool playerShot = true, bool ai = false)
 	{
 		base.Shoot();
-        if (biteTimeLeft <= Time.time)
+
+		if (attackTimeLeft <= Time.time)
 		{
-			biteTimeLeft = -1;
+			attackTimeLeft = -1;
 		}
 
 		int layerMask = 1 << 10;
@@ -31,11 +28,11 @@ public class Hand : Weapon {
 		{
 			if (hit.collider.tag == "Human" || hit.collider.tag == "Enemy")
 			{
-				if (Vector3.Distance(hit.collider.transform.position, transform.position) <= biteRange && biteTimeLeft == -1)
+				if (Vector3.Distance(hit.collider.transform.position, transform.position) <= attackRange && attackTimeLeft == -1)
 				{
-					biteTimeLeft = Time.time + biteTime;
+					attackTimeLeft = Time.time + attackTime;
 					Debug.Log(hit.collider.name);
-					hit.collider.gameObject.GetComponent<BasicAI>().wasBitten = true;
+					hit.collider.gameObject.GetComponent<BasicAI>().Hit(true);
 				}
 			}
 		}

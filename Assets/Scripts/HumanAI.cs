@@ -19,7 +19,6 @@ public class HumanAI: BasicAI {
 	// Use this for initialization
 	new void Start () {
 		base.Start();
-
 		player = GameObject.FindGameObjectWithTag("Player").transform;
 
 	}

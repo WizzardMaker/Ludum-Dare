@@ -14,7 +14,7 @@ public class BasicAI : MonoBehaviour {
 
 	bool dead;
 
-	public bool wasBitten;
+	public bool wasHit;
 	public Material biteMaterial;
 
 	Material standardMaterial;
@@ -23,7 +23,7 @@ public class BasicAI : MonoBehaviour {
 	protected CharacterController controller;
 
 
-	public float biteTime, actBiteTime = -1;
+	public float hitTime, actHitTime = -1;
 
 	public int lives;
 
@@ -32,48 +32,51 @@ public class BasicAI : MonoBehaviour {
 	protected void Start () {
 		controller = GetComponent<CharacterController>();
 		handler = GameObject.FindGameObjectWithTag("UI").GetComponent<UIHandler>();
+		Debug.Log(handler.name);
     }
 	
 	// Update is called once per frame
 	protected void Update () {
 
-		if (dead)
+		if (GetComponentInChildren<Animator>().GetBool("died"))
 		{
-			
+			Destroy(gameObject);
         }
 
-		if (wasBitten && actBiteTime == -1 && !dead)
+
+
+		if(actHitTime <= Time.time && actHitTime != -1)
+		{
+			GetComponentInChildren<MeshRenderer>().material = standardMaterial;
+
+			actHitTime = -1;
+			wasHit = false;
+        }
+	}
+
+	public void Hit(bool bite = false)
+	{
+		if (actHitTime == -1 && !dead)
 		{
 			lives--;
-			if(lives <= 0)
+			if (lives <= 0)
 			{
-				Die();
+				Die(bite);
 			}
 
 			standardMaterial = GetComponentInChildren<MeshRenderer>().material;
 			GetComponentInChildren<MeshRenderer>().material = biteMaterial;
 
-			actBiteTime = Time.time + biteTime;
+			actHitTime = Time.time + hitTime;
 		}
-
-		if(actBiteTime <= Time.time && wasBitten)
-		{
-			GetComponentInChildren<MeshRenderer>().material = standardMaterial;
-
-			actBiteTime = -1;
-			wasBitten = false;
-        }
-	}
-
-	void Hit(bool bite = false)
-	{
-
 	}
 
 	void Die(bool bite = true)
 	{
+		Debug.Log(name);
+		Debug.Log(handler.name);
 		handler.AddXp(xp);
-
+		
 		moves = false;
 		dead = true;
 		for (int i = 0; i < Random.Range(1, rangeMoneySpawns); i++)

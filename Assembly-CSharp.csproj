@@ -46,9 +46,9 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\Bullet.cs" />
      <Compile Include="Assets\Scripts\BasicAI.cs" />
      <Compile Include="Assets\Scripts\CameraSize.cs" />
+     <Compile Include="Assets\Scripts\Enemy.cs" />
      <Compile Include="Assets\Scripts\FollowTarget.cs" />
      <Compile Include="Assets\Scripts\House.cs" />
      <Compile Include="Assets\Scripts\HumanAI.cs" />
@@ -58,8 +58,11 @@
      <Compile Include="Assets\Scripts\PickUps\PickUp.cs" />
      <Compile Include="Assets\Scripts\Player.cs" />
      <Compile Include="Assets\Scripts\UIHandler.cs" />
+     <Compile Include="Assets\Scripts\Weapons\Bullet.cs" />
+     <Compile Include="Assets\Scripts\Weapons\BulletCasing.cs" />
      <Compile Include="Assets\Scripts\Weapons\Hand.cs" />
      <Compile Include="Assets\Scripts\Weapons\Pistol.cs" />
+     <Compile Include="Assets\Scripts\Weapons\Uzi.cs" />
      <Compile Include="Assets\Scripts\Weapons\Weapon.cs" />
      <Compile Include="Assets\Scripts\Weapons\WeaponContainer.cs" />
      <Compile Include="Assets\Scripts\deathAnimation.cs" />

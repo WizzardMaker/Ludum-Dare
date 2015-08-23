@@ -1,0 +1,9 @@
+﻿using UnityEngine;using System.Collections.Generic;public class Player : MonoBehaviour {	public WeaponContainer leftHand, rightHand;	CharacterController controller;	public UIHandler handler;	public float speed,rotSpeed;	public float sprintTime,sprintTimeLeft, sprintSpeedFactor,sprintRefill;	public float biteRange, biteTime, biteTimeLeft;	public Material hitMaterial;	Vector3 newDir;	Vector3 velocity;	// Use this for initialization	void Start () {		controller = GetComponent<CharacterController>();		sprintTimeLeft = sprintTime;		biteTimeLeft = -1;    }		void Update(){		velocity = transform.forward * Input.GetAxisRaw("Vertical");		handler.staminaAmount = sprintTimeLeft / sprintTime;		//Debug.Log(Input.GetAxisRaw("SwitchWeapon"));		if (Input.GetButtonDown("WeaponLeft")){
+			Debug.Log("Change Left!");
+			leftHand.nextWeapon();
+		}		if (Input.GetButtonDown("WeaponRight")){
+			Debug.Log("Change Right!");
+			rightHand.nextWeapon();
+        }		if (Input.GetButtonDown("Fire2"))		{			leftHand.Shoot();        }
+		if (Input.GetButtonDown("Fire1"))		{			rightHand.Shoot();
+		}	}	// Update is called once per frame	void FixedUpdate () {		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);		RaycastHit hit;		int layerMask = 1 << 8;		if (Physics.Raycast(ray, out hit, 100, layerMask))		{			newDir = Vector3.RotateTowards(transform.forward, hit.point - transform.position, rotSpeed * Time.deltaTime, 0.0F);            transform.rotation = Quaternion.LookRotation(newDir);			transform.rotation = Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0);		}		if (Input.GetButton("Sprint") && sprintTimeLeft > 0)		{			controller.SimpleMove(velocity * (speed * sprintSpeedFactor));			sprintTimeLeft--;		}		else		{			controller.SimpleMove(velocity * (speed));		}		if (!Input.GetButton("Sprint"))		{			sprintTimeLeft += sprintTimeLeft < sprintTime ? sprintRefill : 0;        }	}}

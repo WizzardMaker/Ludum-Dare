@@ -1,0 +1,1 @@
+﻿using UnityEngine;using System.Collections;[RequireComponent (typeof(Animation))]public class Weapon : MonoBehaviour {	public GameObject bulletPrefab;	protected Animation anim;	public string weaponName;	// Use this for initialization	public void Start () {		anim = GetComponent<Animation>();	}	public virtual void Shoot()	{		anim.Play();	}}

@@ -14,6 +14,7 @@ public class FollowTarget : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		followTransform = GameObject.FindGameObjectWithTag("Player").transform;
 		transform.position = new Vector3(followTransform.position.x, fixY ? 0 : followTransform.position.y ,followTransform.position.z) + transform.forward * -distance;
 	}
 }

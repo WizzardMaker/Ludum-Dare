@@ -1,7 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class WeaponContainer : MonoBehaviour{	public GameObject[] weapons = new GameObject[1];	public int activeWeapon;	public int side = 1;	void Awake()
+public class WeaponContainer : MonoBehaviour{	public GameObject[] weapons = new GameObject[1];	public bool[] weaponActive = new bool[1];	public int activeWeapon;	public int side = 1;	public void SetActive(int id)
+	{
+		weaponActive[id] = true;
+    }	void Awake()
 	{
 		ToggleWeapon(0);
 	}	protected void ResetWeapon()
@@ -14,6 +17,21 @@ public class WeaponContainer : MonoBehaviour{	public GameObject[] weapons = ne
 		}
 	}	public void ToggleWeapon(int id)
 	{
+		if (!weaponActive[id])
+		{
+			if(weapons.Length  == id)
+			{
+				id = 0;
+			}
+			else
+			{
+				id += 1;
+				if (weapons.Length == id)
+				{
+					id = 0;
+				}
+			}
+        }
 		activeWeapon = id;
 		ResetWeapon();
 		weapons[id].gameObject.SetActive(true);

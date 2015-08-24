@@ -4,6 +4,12 @@ using System.Collections;
 public class BasicAI : MonoBehaviour {
 
 	public UIHandler handler;
+	public GameObject shop;
+
+	public bool shopMaster = false;
+	public bool invincible = false;
+
+	public GameObject zombiePrefab;
 
 	public GameObject moneyPrefab;
 	public int rangeMoneySpawns;
@@ -54,14 +60,17 @@ public class BasicAI : MonoBehaviour {
         }
 	}
 
-	public void Hit(bool bite = false)
+	public void Hit(bool bite = false, float zombieChance = 20)
 	{
+		if (invincible)
+			return;
+
 		if (actHitTime == -1 && !dead)
 		{
 			lives--;
 			if (lives <= 0)
 			{
-				Die(bite);
+				Die(bite, zombieChance);
 			}
 
 			standardMaterial = GetComponentInChildren<MeshRenderer>().material;
@@ -71,19 +80,40 @@ public class BasicAI : MonoBehaviour {
 		}
 	}
 
-	void Die(bool bite = true)
+	void Die(bool bite = false, float zombieChance = 20)
 	{
+		GameObject player = GameObject.FindGameObjectWithTag("Player");
+
 		Debug.Log(name);
 		Debug.Log(handler.name);
 		handler.AddXp(xp);
 		
 		moves = false;
 		dead = true;
+
+		if (bite)
+		{
+			if (Random.Range(0, 100) <= zombieChance)
+			{
+				GameObject temp = (GameObject)Instantiate(zombiePrefab, transform.position, Quaternion.identity);
+				temp.GetComponent<Player>().aiControled = true;
+			}
+		}
+
 		for (int i = 0; i < Random.Range(1, rangeMoneySpawns); i++)
 		{
 			Instantiate(moneyPrefab, transform.position + new Vector3(1 * Random.Range(-2,2),0, 1 * Random.Range(-2, 2)), Quaternion.identity);
 		}
 		GetComponentInChildren<Animator>().SetBool("death",true);
+	}
+
+	public void Interact()
+	{
+		if (!shopMaster)
+			return;
+		Time.timeScale = 0;
+		shop.gameObject.SetActive(true);
+		handler.StartShop();
 	}
 
 

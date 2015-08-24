@@ -31,6 +31,14 @@ public class Enemy : BasicAI {
 	new void Update()
 	{
 		base.Update();
+		if (GameObject.FindGameObjectWithTag("Player"))
+		{
+			player = GameObject.FindGameObjectWithTag("Player").transform;
+		}
+		else
+		{
+			return;
+		}
 
 		if (!moves)
 			return;
@@ -81,9 +89,9 @@ public class Enemy : BasicAI {
 			Physics.Raycast(ray, out hit, maxShootDistance, layerMask);
             if (Vector3.Distance(transform.position, player.transform.position) <= maxShootDistance && hit.collider.tag == "Player")
 			{
-				transform.rotation = Quaternion.Euler(0, transform.rotation.eulerAngles.y + 5, 0);
-				arm.Shoot(false,true);
 				transform.rotation = Quaternion.Euler(0, transform.rotation.eulerAngles.y - 5, 0);
+				arm.Shoot(false,true);
+				transform.rotation = Quaternion.Euler(0, transform.rotation.eulerAngles.y + 5, 0);
 			}
 		}
 

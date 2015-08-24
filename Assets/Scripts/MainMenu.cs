@@ -3,23 +3,30 @@ using System.Collections;
 
 public class MainMenu : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
-
 	public void PlayButton()
 	{
-		Application.LoadLevel(Application.loadedLevel + 1);
+		Application.LoadLevel(1);
 	}
 
 	public void ExitButton()
 	{
 		Application.Quit();
+	}
+
+	public void NextButton()
+	{
+		Application.LoadLevel(Application.loadedLevel + 1);
+	}
+	public void PrevButton()
+	{
+		Application.LoadLevel(Application.loadedLevel + 1);
+	}
+	public void BackButton()
+	{
+		Application.LoadLevel(0);
+	}
+	public void TutorialButton()
+	{
+		Application.LoadLevel(3);
 	}
 }

@@ -27,6 +27,14 @@ public class HumanAI: BasicAI {
 	new void Update () {
 
 		base.Update();
+		if (GameObject.FindGameObjectWithTag("Player"))
+		{
+			player = GameObject.FindGameObjectWithTag("Player").transform;
+		}
+		else
+		{
+			return;
+		}
 
 		if (!moves)
 			return;

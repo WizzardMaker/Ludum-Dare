@@ -19,7 +19,7 @@ public class Pistol : Weapon {
 		}		if (attackTimeLeft == -1 && clipAmunition > 0)
 		{
 			clipAmunition -= ai ? 0:1;
-			GameObject temp = (GameObject)Instantiate(bulletPrefab, transform.position, transform.parent.parent.localRotation);
+			GameObject temp = (GameObject)Instantiate(bulletPrefab, transform.position, transform.parent.parent.parent.localRotation);
 			temp.GetComponent<Bullet>().playerFired = playerShot;
 			Instantiate(casingPrefab, transform.position, transform.parent.parent.localRotation);
 			attackTimeLeft = Time.time + attackTime;

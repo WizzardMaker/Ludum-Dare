@@ -21,6 +21,9 @@ public class Bullet : MonoBehaviour {
 
 	void OnTriggerEnter(Collider col)
 	{
+
+
+
 		//Debug.Log(playerFired);
 		//Debug.Log(col.name);
 		if(col.tag == "Human" || col.tag == (playerFired ? "Enemy" : "Player"))

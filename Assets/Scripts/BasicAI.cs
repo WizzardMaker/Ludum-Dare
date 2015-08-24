@@ -39,6 +39,10 @@ public class BasicAI : MonoBehaviour {
 		controller = GetComponent<CharacterController>();
 		handler = GameObject.FindGameObjectWithTag("UI").GetComponent<UIHandler>();
 		Debug.Log(handler.name);
+		
+		shop = GameObject.FindGameObjectWithTag("Shop");
+		if(shopMaster)
+			shop.SetActive(false);
     }
 	
 	// Update is called once per frame
@@ -109,6 +113,8 @@ public class BasicAI : MonoBehaviour {
 
 	public void Interact()
 	{
+		Debug.Log("Interacted");
+
 		if (!shopMaster)
 			return;
 		Time.timeScale = 0;

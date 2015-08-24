@@ -6,7 +6,7 @@ public class UIHandler : MonoBehaviour {
 
 	public Image staminaPanel,xpPanel;
 
-	public GameObject Shop;
+	public GameObject Shop,PauseMenu;
 
 	public WeaponContainer leftHand, rightHand;
 
@@ -57,26 +57,24 @@ public class UIHandler : MonoBehaviour {
 	public void StartShop()
 	{
 
-		Armor.GetComponentInChildren<Text>().text = "Current Health: " + GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().lives;
-		Stamina.GetComponentInChildren<Text>().text = "Current Sprint Time: " + GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().sprintTime;
+		Armor.GetComponent<Text>().text = "Current Health: " + GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().lives / 2;
+		Stamina.GetComponent<Text>().text = "Current Sprint Time: " + GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().sprintTime;
 
-		if (GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().IsUnlocked(1,true))
-		{
-			Pistol.GetComponent<Text>().text = "Bought Left!";
-		}
-		else if (GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().IsUnlocked(1, false)) {
+		
+		if (GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().IsUnlocked(1, false)) {
 			Pistol.GetComponent<Text>().text = "Bought Both!";
 		}
 		else
 		{
 			Pistol.GetComponent<Text>().text = "Not Bought";
 		}
-
-		if (GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().IsUnlocked(2, true))
+		if (GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().IsUnlocked(1,true))
 		{
-			Uzi.GetComponent<Text>().text = "Bought Left!";
+			Pistol.GetComponent<Text>().text = "Bought Left!";
 		}
-		else if (GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().IsUnlocked(2, false))
+
+		
+		if (GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().IsUnlocked(2, false))
 		{
 			Uzi.GetComponent<Text>().text = "Bought Both!";
 		}
@@ -84,19 +82,41 @@ public class UIHandler : MonoBehaviour {
 		{
 			Uzi.GetComponent<Text>().text = "Not Bought";
 		}
-
-		/*if (GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().IsUnlocked(3, true))
+		if (GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().IsUnlocked(2, true))
 		{
-			Pistol.GetComponentInChildren<Text>().text = "Bought Left!";
+			Uzi.GetComponent<Text>().text = "Bought Left!";
 		}
-		else if (GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().IsUnlocked(3, false))
+
+		UziAmmo.GetComponent<Text>().text = "Ammo:  " + GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().leftHand.weapons[2].GetComponent<Weapon>().amunition + "/" + GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().rightHand.weapons[2].GetComponent<Weapon>().amunition;
+		PistolAmmo.GetComponent<Text>().text = "Ammo:  " + GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().leftHand.weapons[1].GetComponent<Weapon>().amunition + "/" + GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().rightHand.weapons[1].GetComponent<Weapon>().amunition;
+		ShotgunAmmo.GetComponent<Text>().text = "Ammo:  " + GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().leftHand.weapons[3].GetComponent<Weapon>().amunition + "/" + GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().rightHand.weapons[3].GetComponent<Weapon>().amunition;
+		
+		if (GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().IsUnlocked(3, false))
 		{
-			Pistol.GetComponentInChildren<Text>().text = "Bought Both!";
+			Shotgun.GetComponentInChildren<Text>().text = "Bought Both!";
 		}
 		else
 		{
-			Pistol.GetComponentInChildren<Text>().text = "Not Bought";
-		}*/
+			Shotgun.GetComponentInChildren<Text>().text = "Not Bought";
+		}
+		if (GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().IsUnlocked(3, true))
+		{
+			Shotgun.GetComponentInChildren<Text>().text = "Bought Left!";
+		}
+	}
+
+	public void PauseMenuExit()
+	{
+		PauseMenu.SetActive(false);
+		Time.timeScale = 1;
+	}
+	public void Restart()
+	{
+		Application.LoadLevel(Application.loadedLevel);
+	}
+	public void Exit()
+	{
+		Application.Quit();
 	}
 
 	public void ShopExit()
@@ -113,52 +133,131 @@ public class UIHandler : MonoBehaviour {
 				if (cashAmount >= 250)
 				{
 					GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().lives += 1;
-					Armor.GetComponentInChildren<Text>().text = "Current Health: " + lives;
+					Armor.GetComponent<Text>().text = "Current Health: " + GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().lives;
+					GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().lives += 1;
 					cashAmount -= 250;
 				}
-                break;
+				break;
 			case ("Stamina"):
 				if (cashAmount >= 150)
 				{
-					GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().sprintTime += 1;
-					Stamina.GetComponentInChildren<Text>().text = "Current Sprint Time: " + GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().sprintTime;
+					GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().sprintTime += 10;
+					Stamina.GetComponent<Text>().text = "Current Sprint Time: " + GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().sprintTime;
 					cashAmount -= 150;
 				}
 				break;
 			case ("Pistol"):
 				if (cashAmount >= 125)
 				{
+					if (GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().IsUnlocked(1, false))
+						return;
+					cashAmount -= 125;
 					if (!GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().IsUnlocked(1, true))
 					{
 						GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().UnlockWeapon(1, true);
+						int tempWeapon = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().leftHand.activeWeapon;
+						GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().leftHand.ToggleWeapon(1);
 						Pistol.GetComponent<Text>().text = "Bought Left!";
+						PistolAmmo.GetComponent<Text>().text = "Ammo:  " + GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().leftHand.weapons[1].GetComponent<Weapon>().amunition + "/" + GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().rightHand.weapons[1].GetComponent<Weapon>().amunition;
+						GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().leftHand.ToggleWeapon(tempWeapon);
 						return;
 					}
 					if (GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().IsUnlocked(1, true))
 					{
+						int tempWeapon = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().rightHand.activeWeapon;
 						GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().UnlockWeapon(1, false);
+						GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().rightHand.ToggleWeapon(1);
 						Pistol.GetComponent<Text>().text = "Bought Both!";
+						PistolAmmo.GetComponent<Text>().text = "Ammo:  " + GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().leftHand.weapons[1].GetComponent<Weapon>().amunition + "/" + GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().rightHand.weapons[1].GetComponent<Weapon>().amunition;
+						GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().rightHand.ToggleWeapon(tempWeapon);
 						return;
 					}
-					cashAmount -= 125;
+					
 				}
 				break;
 			case ("Uzi"):
 				if (cashAmount >= 875)
 				{
+					if (GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().IsUnlocked(2, false))
+						return;
+					cashAmount -= 875;
 					if (!GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().IsUnlocked(2, true))
 					{
+						int tempWeapon = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().leftHand.activeWeapon;
 						GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().UnlockWeapon(2, true);
+						GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().leftHand.ToggleWeapon(2);
 						Uzi.GetComponent<Text>().text = "Bought Left!";
+						UziAmmo.GetComponent<Text>().text = "Ammo:  " + GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().leftHand.weapons[2].GetComponent<Weapon>().amunition + "/" + GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().rightHand.weapons[2].GetComponent<Weapon>().amunition;
+						GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().leftHand.ToggleWeapon(tempWeapon);
 						return;
 					}
 					if (GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().IsUnlocked(2, true))
 					{
+						int tempWeapon = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().rightHand.activeWeapon;
 						GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().UnlockWeapon(2, false);
+						GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().rightHand.ToggleWeapon(2);
 						Uzi.GetComponent<Text>().text = "Bought Both!";
+						UziAmmo.GetComponent<Text>().text = "Ammo:  " + GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().leftHand.weapons[2].GetComponent<Weapon>().amunition + "/" + GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().rightHand.weapons[2].GetComponent<Weapon>().amunition;
+						GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().rightHand.ToggleWeapon(tempWeapon);
 						return;
 					}
-					cashAmount -= 875;
+					
+				}
+				break;
+			case ("Shotgun"):
+				if (cashAmount >= 1250)
+				{
+					if (GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().IsUnlocked(3, false))
+						return;
+					cashAmount -= 1250;
+					if (!GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().IsUnlocked(3, true))
+					{
+						int tempWeapon = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().leftHand.activeWeapon;
+						GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().UnlockWeapon(3, true);
+						GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().leftHand.ToggleWeapon(3);
+						Shotgun.GetComponent<Text>().text = "Bought Left!";
+						UziAmmo.GetComponent<Text>().text = "Ammo:  " + GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().leftHand.weapons[3].GetComponent<Weapon>().amunition + "/" + GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().rightHand.weapons[3].GetComponent<Weapon>().amunition;
+						GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().leftHand.ToggleWeapon(tempWeapon);
+						return;
+					}
+					if (GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().IsUnlocked(3, true))
+					{
+						int tempWeapon = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().rightHand.activeWeapon;
+						GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().UnlockWeapon(3, false);
+						GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().rightHand.ToggleWeapon(3);
+						Shotgun.GetComponent<Text>().text = "Bought Both!";
+						ShotgunAmmo.GetComponent<Text>().text = "Ammo:  " + GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().leftHand.weapons[3].GetComponent<Weapon>().amunition + "/" + GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().rightHand.weapons[3].GetComponent<Weapon>().amunition;
+						GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().rightHand.ToggleWeapon(tempWeapon);
+						return;
+					}
+
+				}
+				break;
+			case ("PistolAmmo"):
+				if (cashAmount >= 25)
+				{
+					GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().leftHand.weapons[1].GetComponent<Weapon>().amunition += 8;
+					GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().rightHand.weapons[1].GetComponent<Weapon>().amunition += 8;
+                    PistolAmmo.GetComponent<Text>().text = "Ammo:  " + GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().leftHand.weapons[1].GetComponent<Weapon>().amunition + "/" + GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().rightHand.weapons[1].GetComponent<Weapon>().amunition;
+					cashAmount -= 25;
+				}
+				break;
+			case ("UziAmmo"):
+				if (cashAmount >= 75)
+				{
+					GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().leftHand.weapons[2].GetComponent<Weapon>().amunition += 15;
+					GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().rightHand.weapons[2].GetComponent<Weapon>().amunition += 15;
+					UziAmmo.GetComponent<Text>().text = "Ammo:  " + GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().leftHand.weapons[2].GetComponent<Weapon>().amunition + "/" + GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().rightHand.weapons[2].GetComponent<Weapon>().amunition;
+					cashAmount -= 75;
+				}
+				break;
+			case ("ShotgunAmmo"):
+				if (cashAmount >= 70)
+				{
+					GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().leftHand.weapons[3].GetComponent<Weapon>().amunition += 6;
+					GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().rightHand.weapons[3].GetComponent<Weapon>().amunition += 6;
+					ShotgunAmmo.GetComponent<Text>().text = "Ammo:  " + GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().leftHand.weapons[3].GetComponent<Weapon>().amunition + "/" + GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().rightHand.weapons[3].GetComponent<Weapon>().amunition;
+					cashAmount -= 70;
 				}
 				break;
 		}

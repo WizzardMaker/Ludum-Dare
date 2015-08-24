@@ -11,7 +11,7 @@ public class Hand : Weapon {
 		base.Start();
 	}
 
-	public override void Shoot(bool playerShot = true, bool ai = false)
+	public override void Shoot(bool playerShot = true, bool ai = false, bool playSound = false)
 	{
 		base.Shoot();
 

@@ -1,4 +1,4 @@
-﻿using UnityEngine;using System.Collections.Generic;public class Player : MonoBehaviour {	public float infectChance = 20;	public int lives = 2;	public bool invincible = false;	public float timeInvincible, timeInvincibleLeft;	public bool aiControled = false, dead = false;	public List<GameObject> fellowZombies = new List<GameObject>();	public Transform player;	public WeaponContainer leftHand, rightHand;	CharacterController controller;	public UIHandler handler;	public float speed,rotSpeed;	public float sprintTime,sprintTimeLeft, sprintSpeedFactor,sprintRefill;	public float biteRange, biteTime, biteTimeLeft;	public Material hitMaterial;	Vector3 newDir;	Vector3 lastPosition;	Vector3 velocity;	// Use this for initialization	void Start () {		handler = GameObject.FindGameObjectWithTag("UI").GetComponent<UIHandler>();        controller = GetComponent<CharacterController>();		sprintTimeLeft = sprintTime;		biteTimeLeft = -1;		if (aiControled)
+﻿using UnityEngine;using System.Collections.Generic;public class Player : MonoBehaviour {	public float infectChance = 20;	public int lives = 2;	public bool invincible = false;	public float timeInvincible, timeInvincibleLeft;	public bool aiControled = false, dead = false;	public List<GameObject> fellowZombies = new List<GameObject>();	public Transform player;	public WeaponContainer leftHand, rightHand;	CharacterController controller;	public UIHandler handler;	public GameObject PauseMenu;	public float speed,rotSpeed;	public float sprintTime,sprintTimeLeft, sprintSpeedFactor,sprintRefill;	public float biteRange, biteTime, biteTimeLeft;	public Material hitMaterial;	Vector3 newDir;	Vector3 lastPosition;	Vector3 velocity;	// Use this for initialization	void Start () {		handler = GameObject.FindGameObjectWithTag("UI").GetComponent<UIHandler>();        controller = GetComponent<CharacterController>();		sprintTimeLeft = sprintTime;		biteTimeLeft = -1;		if (aiControled)
 		{
 			Debug.Log(GameObject.FindGameObjectsWithTag("Player").Length);
 			tag = "Untagged";
@@ -47,7 +47,17 @@
 					go.GetComponent<Player>().UnlockWeapon(i, false);
 			}
 		}
-	}	void Update(){				if (GetComponentInChildren<Animator>().GetBool("died"))
+	}	void Update(){
+		for (int i = 0; i < fellowZombies.Count; i++)
+		{
+			fellowZombies[i].GetComponent<Player>().leftHand.weapons[leftHand.activeWeapon].GetComponent<Weapon>().clipAmunition = leftHand.weapons[leftHand.activeWeapon].GetComponent<Weapon>().clipAmunition;
+			fellowZombies[i].GetComponent<Player>().rightHand.weapons[rightHand.activeWeapon].GetComponent<Weapon>().clipAmunition = rightHand.weapons[rightHand.activeWeapon].GetComponent<Weapon>().clipAmunition;
+			fellowZombies[i].GetComponent<Player>().leftHand.weapons[leftHand.activeWeapon].GetComponent<Weapon>().amunition = leftHand.weapons[leftHand.activeWeapon].GetComponent<Weapon>().amunition;
+			fellowZombies[i].GetComponent<Player>().rightHand.weapons[rightHand.activeWeapon].GetComponent<Weapon>().amunition = rightHand.weapons[rightHand.activeWeapon].GetComponent<Weapon>().amunition;
+		}
+		
+
+		if (Time.timeScale == 0)			return;		if (GetComponentInChildren<Animator>().GetBool("died"))
 		{
 			if (aiControled)
 				player.GetComponent<Player>().fellowZombies.Remove(gameObject);
@@ -60,29 +70,6 @@
 			GetComponentInChildren<Animator>().SetBool("invincible", false);
 		}		if (aiControled)
 		{
-
-			if (Input.GetButtonDown("Fire3"))
-			{
-				Debug.Log("Interact");
-				//int layerMask = 1 << 11;
-				//layerMask = ~layerMask;
-
-				Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-				RaycastHit hit;
-				int layerMask = 1 << 10;
-				if (Physics.Raycast(ray, out hit, Mathf.Infinity, layerMask))
-				{
-					Debug.Log(hit.collider.name);
-					if (hit.collider.tag == "Human" || hit.collider.tag == "Enemy")
-					{
-						if (Vector3.Distance(hit.collider.transform.position, transform.position) <= 8)
-						{
-							
-							hit.collider.gameObject.GetComponent<BasicAI>().Interact();
-						}
-					}
-				}
-			}
 
 			if (Input.GetButtonDown("Reload"))
 			{
@@ -114,6 +101,31 @@
 		}
 		else
 		{
+
+			if (Input.GetButtonDown("Fire3"))
+			{
+
+				//int layerMask = 1 << 11;
+				//layerMask = ~layerMask;
+
+				Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+				RaycastHit hit;
+				int layerMask = 1 << 10;
+				if (Physics.Raycast(ray, out hit, Mathf.Infinity, layerMask))
+				{
+					Debug.Log(hit.collider.tag);
+					if (hit.collider.tag == "Human" || hit.collider.tag == "Enemy")
+					{
+						Debug.Log(Vector3.Distance(hit.collider.transform.position, transform.position));
+						if (Vector3.Distance(hit.collider.transform.position, transform.position) <= 8)
+						{
+
+							hit.collider.gameObject.GetComponent<BasicAI>().Interact();
+						}
+					}
+				}
+			}
+
 			velocity = transform.forward * Input.GetAxisRaw("Vertical");
 
 			handler.staminaAmount = sprintTimeLeft / sprintTime;
@@ -129,6 +141,11 @@
 			if (Input.GetButtonDown("Reload"))
 			{
 				leftHand.Reload();
+			}
+			if (Input.GetButtonDown("Cancel"))
+			{
+				PauseMenu.SetActive(true);
+				Time.timeScale = 0;
 			}
 			if (Input.GetButtonDown("ReloadRight"))
 			{
@@ -150,11 +167,11 @@
 
 			if (Input.GetButton("Fire2"))
 			{
-				rightHand.Shoot();
+				rightHand.Shoot(true,false,true);
 			}
 			if (Input.GetButton("Fire1"))
 			{
-				leftHand.Shoot();
+				leftHand.Shoot(true, false, true);
 			}		}	}	// Update is called once per frame	void FixedUpdate () {
 
 		if (dead)
@@ -245,10 +262,11 @@
 	}	public void TogglePlayer()
 	{
 		tag = "Untagged";
-		fellowZombies[fellowZombies.Count - 1].tag = "Player";
-		fellowZombies[fellowZombies.Count - 1].GetComponent<Player>().aiControled = false;
-		fellowZombies[fellowZombies.Count - 1].GetComponent<Player>().MakeInvincible();
-        fellowZombies.RemoveAt(fellowZombies.Count -1 );
+		fellowZombies[fellowZombies.Count ].tag = "Player";
+		fellowZombies[fellowZombies.Count ].GetComponent<Player>().aiControled = false;
+		fellowZombies[fellowZombies.Count ].GetComponent<Player>().MakeInvincible();
+		fellowZombies[fellowZombies.Count ].GetComponent<Player>().fellowZombies = fellowZombies;
+		fellowZombies.RemoveAt(fellowZombies.Count);
 	}	public void Hit()
 	{
 		if (invincible)

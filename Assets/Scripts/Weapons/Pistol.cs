@@ -6,12 +6,13 @@ public class Pistol : Weapon {
 	// Use this for initialization
 	new void Start () {
 		base.Start();
+		/*
 		amunition = 30;
 		clipSize = 8;
-		clipAmunition = 8;
+		clipAmunition = 8;*/
     }
-	
-	public override void Shoot(bool playerShot = true, bool ai = false)	{		base.Shoot();
+
+	public override void Shoot(bool playerShot = true, bool ai = false, bool playSound = false)	{		
 
 		if (attackTimeLeft <= Time.time)
 		{
@@ -23,5 +24,6 @@ public class Pistol : Weapon {
 			temp.GetComponent<Bullet>().playerFired = playerShot;
 			Instantiate(casingPrefab, transform.position, transform.parent.parent.localRotation);
 			attackTimeLeft = Time.time + attackTime;
+			base.Shoot(playerShot,ai,playSound);
 		}	}
 }

@@ -15,7 +15,7 @@ public class PickUp : MonoBehaviour {
 
 	virtual public void OnTriggerEnter(Collider caller)
 	{
-		if(caller.tag == "Player")
+		if(caller.tag == "Player" || caller.tag == "House")
 			Destroy(gameObject);
 	}
 

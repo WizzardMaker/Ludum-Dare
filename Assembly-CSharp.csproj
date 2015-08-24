@@ -51,6 +51,7 @@
      <Compile Include="Assets\Scripts\CameraSize.cs" />
      <Compile Include="Assets\Scripts\Enemy.cs" />
      <Compile Include="Assets\Scripts\FollowTarget.cs" />
+     <Compile Include="Assets\Scripts\Group.cs" />
      <Compile Include="Assets\Scripts\House.cs" />
      <Compile Include="Assets\Scripts\HumanAI.cs" />
      <Compile Include="Assets\Scripts\LevelGenerator.cs" />
@@ -63,6 +64,7 @@
      <Compile Include="Assets\Scripts\Weapons\BulletCasing.cs" />
      <Compile Include="Assets\Scripts\Weapons\Hand.cs" />
      <Compile Include="Assets\Scripts\Weapons\Pistol.cs" />
+     <Compile Include="Assets\Scripts\Weapons\Shotgun.cs" />
      <Compile Include="Assets\Scripts\Weapons\Uzi.cs" />
      <Compile Include="Assets\Scripts\Weapons\Weapon.cs" />
      <Compile Include="Assets\Scripts\Weapons\WeaponContainer.cs" />

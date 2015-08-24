@@ -6,13 +6,14 @@ public class Uzi : Weapon {
 	// Use this for initialization
 	new void Start () {
 		base.Start();
+		/*
 		amunition = 15;
 		clipSize = 15;
-		clipAmunition = 15;
+		clipAmunition = 15;*/
     }
 
 	// Update is called once per frame
-	public override void Shoot(bool playerShot = true, bool ai = false) {
+	public override void Shoot(bool playerShot = true, bool ai = false, bool playSound = false) {
 		if (attackTimeLeft <= Time.time)
 		{
 			attackTimeLeft = -1;
@@ -23,6 +24,7 @@ public class Uzi : Weapon {
 			temp.GetComponent<Bullet>().playerFired = playerShot;
 			Instantiate(casingPrefab, transform.position, transform.parent.parent.localRotation);
 			attackTimeLeft = Time.time + attackTime;
+			base.Shoot(playerShot, ai, playSound);
 		}
 	}
 }

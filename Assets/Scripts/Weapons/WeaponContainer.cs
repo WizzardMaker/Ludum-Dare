@@ -17,19 +17,19 @@ public class WeaponContainer : MonoBehaviour{	public GameObject[] weapons = ne
 		}
 	}	public void ToggleWeapon(int id)
 	{
+		if (weapons.Length == id)
+		{
+			id = 0;
+		}
 		if (!weaponActive[id])
 		{
-			if(weapons.Length  == id)
-			{
-				id = 0;
-			}
-			else
-			{
-				id += 1;
-				if (weapons.Length == id)
-				{
-					id = 0;
-				}
+				while (id <= weapons.Length) {
+					id += 1;
+					if (weapons.Length == id)
+					{
+						id = 0;
+						break;
+					}
 			}
         }
 		activeWeapon = id;
@@ -54,7 +54,7 @@ public class WeaponContainer : MonoBehaviour{	public GameObject[] weapons = ne
 		throw new Exception("Weapon with name: " + name + " not in Container");
 	}	public void NextWeapon()
 	{
-		if (activeWeapon >= weapons.Length -1)
+		if (activeWeapon >= weapons.Length)
 			activeWeapon = -1;
 		ToggleWeapon(activeWeapon + 1);
     }	public void Reload()
@@ -64,11 +64,11 @@ public class WeaponContainer : MonoBehaviour{	public GameObject[] weapons = ne
 			weapons[activeWeapon].GetComponent<Weapon>().Reload();
 			//Debug.Log(weapons[activeWeapon].GetComponent<Weapon>().weaponName);
 		}
-	}	public void Shoot(bool playerShot = true, bool ai = false)
+	}	public void Shoot(bool playerShot = true, bool ai = false, bool playSound = false)
 	{
 		if (activeWeapon != -1)
 		{
-			weapons[activeWeapon].GetComponent<Weapon>().Shoot(playerShot, ai);
+			weapons[activeWeapon].GetComponent<Weapon>().Shoot(playerShot, ai, playSound);
 			//Debug.Log(weapons[activeWeapon].GetComponent<Weapon>().weaponName);
 		}
 	}}

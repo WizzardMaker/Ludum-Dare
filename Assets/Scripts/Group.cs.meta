@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 5f15bf859f66d5d47ac8fed39cb625df
+timeCreated: 1440415971
+licenseType: Free
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - indicatorPrefab: {fileID: 164940, guid: b474982230d9c6141979c8b6b15154b6, type: 2}
+  - indicator: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
